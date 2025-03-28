@@ -6,7 +6,7 @@
 /*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 14:49:29 by hguerrei          #+#    #+#             */
-/*   Updated: 2025/03/27 17:27:30 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/03/28 12:33:26 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <pthread.h>
+#include <string.h>
 
 typedef struct s_philo
 {
@@ -25,7 +26,7 @@ typedef struct s_philo
 	int time_to_die;
 	int time_to_eat;
 	int time_to_sleep;
-	int num_of_times_each_philo_eat;
+	int num_of_times_each_philo_eat;//opcional
 } t_philo;
 
 
