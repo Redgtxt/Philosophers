@@ -19,6 +19,7 @@
 #include <sys/time.h>
 #include <pthread.h>
 #include <string.h>
+#include <limits.h>
 
 typedef struct s_philo
 {
@@ -29,5 +30,6 @@ typedef struct s_philo
 	int num_of_times_each_philo_eat;//opcional
 } t_philo;
 
-
+void debug_values_philo(	t_philo philo);
+int inicialize_program(int argc,char *argv[]);
 #endif

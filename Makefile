@@ -3,7 +3,9 @@ NAME = philo
 SRC_DIR = src
 OBJDIR = obj
 
-SRC = $(SRC_DIR)/main.c
+SRC = $(SRC_DIR)/main.c \
+	$(SRC_DIR)/utils.c \
+
 
 OBJS = $(SRC:$(SRC_DIR)/%.c=$(OBJDIR)/%.o)
 
