@@ -76,25 +76,25 @@ static int do_parsing(char *argv[])
 static int give_values(t_philo *philo, char *argv[], int argc)
 {
     philo->num_of_philos = ft_atoi(argv[1]);
-    if (philo->num_of_philos == -1)
+    if (philo->num_of_philos == -1 || philo->num_of_philos == 0)
         return -1;
 
     philo->time_to_die = ft_atoi(argv[2]);
-    if (philo->time_to_die == -1)
+    if (philo->time_to_die == -1 || philo->time_to_die == 0)
         return -1;
 
     philo->time_to_eat = ft_atoi(argv[3]);
-    if (philo->time_to_eat == -1)
+    if (philo->time_to_eat == -1 || philo->time_to_eat == 0)
         return -1;
 
     philo->time_to_sleep = ft_atoi(argv[4]);
-    if (philo->time_to_sleep == -1)
+    if (philo->time_to_sleep == -1 || philo->time_to_sleep == 0)
         return -1;
 
     if(argc == 6)
     {
         philo->num_of_times_each_philo_eat = ft_atoi(argv[5]);
-        if (philo->num_of_times_each_philo_eat == -1)
+        if (philo->num_of_times_each_philo_eat == -1 || philo->num_of_times_each_philo_eat == 0)
             return -1;
     }
     else
@@ -117,6 +117,7 @@ int inicialize_program(int argc,char *argv[])
         }
         if(give_values(&philo,argv,argc) == -1)
         {
+            printf("Error: Value Invalid\n");
             return -1;
         }
         debug_values_philo(philo);
