@@ -9,7 +9,7 @@ SRC = $(SRC_DIR)/main.c \
 
 OBJS = $(SRC:$(SRC_DIR)/%.c=$(OBJDIR)/%.o)
 
-CC = cc
+CC = cc -g
 FLAGS = -Wall -Wextra -Werror
 
 all: $(NAME)
