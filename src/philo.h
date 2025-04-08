@@ -6,7 +6,7 @@
 /*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 14:49:29 by hguerrei          #+#    #+#             */
-/*   Updated: 2025/04/08 14:39:59 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:50:25 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,10 @@
 #include <limits.h>
 #define MILISECONDS 1000
 
+#define EAT_MSG "estou a comer safada"
+#define THINK_MSG "aiii sou tao smart olha para mim a pensar"
+#define SLEEP_MSG "vou dormir mimimiim"
+
 typedef struct s_worker
 {
 	int num_of_philos;
@@ -30,7 +34,7 @@ typedef struct s_worker
 	long int time_to_sleep;
 	int num_of_times_each_philo_eat;//opcional
 
-
+	int id;
 } t_worker;
 
 typedef struct s_philo

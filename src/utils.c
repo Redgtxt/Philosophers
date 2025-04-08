@@ -117,7 +117,7 @@ t_worker *worker_init(t_philo *philo)
         worker[i].time_to_sleep = philo->time_to_sleep;
         worker[i].num_of_times_each_philo_eat = philo->num_of_times_each_philo_eat;
         worker[i].num_of_philos = philo->num_of_philos;
-
+        worker[i].id = i + 1;
         i++;
     }
 

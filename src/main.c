@@ -23,31 +23,49 @@ unsigned long int get_time(void)
 		return(my_gettimeofday() - start_time );
 	}
 }
+int print_philo(t_worker worker,char *msg)
+{
+	printf("%lu Philosofer:%d %s\n",get_time(), worker.id,msg);
+	return 0;
+}
 
 void ft_usleep(long int time)
 {
 	usleep(time * 1000);
 }
-int eat(t_worker philo)
+int eat(t_worker worker)
 {
-
+	print_philo(worker,EAT_MSG);
+	ft_usleep(worker.time_to_eat);
 	return 0;
 }
 
-int my_sleep(t_worker philo)
+int my_sleep(t_worker worker)
 {
-
+	print_philo(worker,SLEEP_MSG);
+	ft_usleep(worker.time_to_sleep);
+	return 0;
 }
 
-int think(t_worker philo)
+int think(t_worker worker)
 {
-
+	print_philo(worker,THINK_MSG);
+	return 0;
 }
-static void* routine()
-{                                                                                                    
-	printf("Test for phtread\n");
-	sleep(1);
-	printf("Exiting for phtread\n");
+
+
+
+void* routine(void *rec)
+{
+	t_worker worker;
+	worker = *(t_worker *)rec;
+	while (1)
+	{
+		eat(worker);
+		my_sleep(worker);
+		think(worker);
+	}
+
 	return NULL;
 }
 
@@ -60,7 +78,7 @@ int storing_philos(t_philo *philo)
     p_num = 0;
     while(philo->num_of_philos > p_num)
     {
-    	if(pthread_create(&philo->philo_storage[p_num],NULL,&routine,NULL) != 0)
+    	if(pthread_create(&philo->philo_storage[p_num],NULL,&routine, &(philo->workers[p_num])) != 0)
 		{
 			//TENHO DE DAR FREE E MATAR OS PHILOS
 			return -1;
