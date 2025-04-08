@@ -6,7 +6,7 @@
 /*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 14:49:29 by hguerrei          #+#    #+#             */
-/*   Updated: 2025/04/04 17:58:39 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/04/08 14:39:59 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,14 @@
 #include <pthread.h>
 #include <string.h>
 #include <limits.h>
+#define MILISECONDS 1000
 
 typedef struct s_worker
 {
-
 	int num_of_philos;
-	int time_to_die;
-	int time_to_eat;
-	int time_to_sleep;
+	long int time_to_die;
+	long int time_to_eat;
+	long int time_to_sleep;
 	int num_of_times_each_philo_eat;//opcional
 
 
@@ -40,9 +40,9 @@ typedef struct s_philo
 	int time_to_eat;
 	int time_to_sleep;
 	int num_of_times_each_philo_eat;//opcional
-	pthread_t *philo_storage;
+	pthread_t *philo_storage;//array que contem as threads
 
-	t_worker *workers;
+	t_worker *workers;//array que contem a estrutura das threads criada
 } t_philo;
 
 
