@@ -1,6 +1,3 @@
-//
-// Created by Redgtxt on 29/03/2025.
-//
 
 #include "philo.h"
 void debug_values_philo(	t_philo philo)
@@ -51,7 +48,7 @@ static int	ft_atoi(const char *str)
     return (int)num;
 }
 
-static int do_parsing(char *argv[])
+int do_parsing(char *argv[])
 {
     int i;
     int j;
@@ -73,7 +70,7 @@ static int do_parsing(char *argv[])
     return 0;
 }
 
-static int give_values(t_philo *philo, char *argv[], int argc)
+int give_values(t_philo *philo, char *argv[], int argc)
 {
     philo->num_of_philos = ft_atoi(argv[1]);
     if (philo->num_of_philos == -1 || philo->num_of_philos == 0)
@@ -103,52 +100,5 @@ static int give_values(t_philo *philo, char *argv[], int argc)
     return 0;
 }
 
-t_worker *worker_init(t_philo *philo)
-{
-    t_worker *worker;
-    int i;
-
-    i = 0;
-    worker = malloc(sizeof(t_worker) * philo->num_of_philos);
-    while (philo->num_of_philos > i)
-    {
-        worker[i].time_to_die = philo->time_to_die;
-        worker[i].time_to_eat = philo->time_to_eat;
-        worker[i].time_to_sleep = philo->time_to_sleep;
-        worker[i].num_of_times_each_philo_eat = philo->num_of_times_each_philo_eat;
-        worker[i].num_of_philos = philo->num_of_philos;
-        worker[i].id = i + 1;
-        i++;
-    }
-
-    return worker;
-}
 
 
-int inicialize_program(int argc,char *argv[],t_philo *philo)
-{
-    if(argc < 5 || argc >= 7)
-    {
-        printf("Error: Wrong number of arguments\n");
-        return -1;
-    }
-    memset(philo,0,sizeof(t_philo));
-    if(do_parsing(argv) == -1)
-    {
-        return -1;
-    }
-    if(give_values(philo,argv,argc) == -1)
-    {
-        printf("Error: Value Invalid\n");
-        return -1;
-    }
-    philo->philo_storage = malloc(sizeof(pthread_t) * philo->num_of_philos);
-    if(!philo->philo_storage)
-    {
-        printf("Error allocating memory for array");
-        return -1;
-    }
-    philo->workers = worker_init(philo);
-    storing_philos(philo);
-    return 0;
-}

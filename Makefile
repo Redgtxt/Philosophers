@@ -5,6 +5,9 @@ OBJDIR = obj
 
 SRC = $(SRC_DIR)/main.c \
 	$(SRC_DIR)/utils.c \
+	$(SRC_DIR)/init_threads.c \
+	$(SRC_DIR)/routine.c \
+	$(SRC_DIR)/time.c \
 
 
 OBJS = $(SRC:$(SRC_DIR)/%.c=$(OBJDIR)/%.o)
