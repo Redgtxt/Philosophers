@@ -20,6 +20,7 @@
 #include <pthread.h>
 #include <string.h>
 #include <limits.h>
+#include <stdbool.h>
 #define MILISECONDS 1000
 
 #define EAT_MSG "is eating"
@@ -28,17 +29,7 @@
 #define DEAD_MSG "is dead"
 #define FORK_MSG "has taken a fork"
 
-typedef struct s_worker
-{
-	int num_of_philos;
-	long int time_to_die;
-	long int time_to_eat;
-	long int time_to_sleep;
-	int num_of_times_each_philo_eat;//opcional
-	pthread_mutex_t *left_fork; 
-	pthread_mutex_t *right_fork; 
-	int id;
-} t_worker;
+
 
 typedef struct s_philo
 {
@@ -47,11 +38,25 @@ typedef struct s_philo
 	int time_to_eat;
 	int time_to_sleep;
 	int num_of_times_each_philo_eat;//opcional
+	pthread_t monitor;
 	pthread_t *philo_storage;//array que contem as threads
 	pthread_mutex_t *mutex_arr;//array de mutexs
-	t_worker *workers;//array que contem a estrutura das threads criada
+	struct s_worker *workers;//array que contem a estrutura das threads criada
 } t_philo;
 
+typedef struct s_worker
+{
+	int num_of_philos;
+	long int time_to_die;
+	int is_full;
+	long int time_to_eat;
+	long int time_to_sleep;
+	int 		n_meals;//opcional
+	pthread_mutex_t *left_fork; 
+	pthread_mutex_t *right_fork; 
+	t_philo *philo;
+	int id;
+} t_worker;
 
 
 /*	TIME	*/
@@ -68,6 +73,7 @@ int inicialize_program(int argc,char *argv[],t_philo *philo);
 /*	ROUTINE	*/
 void* routine(void *rec);
 
+void* monitor_thread(void *rec);
 
 pthread_mutex_t *create_mutex(int num);
 void cleanup_mutex(pthread_mutex_t *arr,int size);
