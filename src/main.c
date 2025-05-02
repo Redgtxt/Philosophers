@@ -36,25 +36,19 @@ void cleanup_mutex(pthread_mutex_t *arr,int size)
 	free(arr);
 }
 
-/*
-	[] criar 
-
-*/
 
 
 int main(int  argc,char *argv[])
 {
 	t_philo philo;
-	bool a = true;
-	bool b = false;
-	printf(" %B :: %B\n\n\n\n", a, b);
+
 	if(inicialize_program(argc,argv,&philo) == -1)
 		return -1;
 
 	int i;
 
 	i = 0;
-	printf("FINISHED\n");
+	pthread_join(philo.monitor,NULL);
 	while (philo.num_of_philos > i)
 	{
 		pthread_join(philo.philo_storage[i],NULL);

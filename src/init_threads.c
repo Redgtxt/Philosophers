@@ -39,6 +39,14 @@ static void fork_set_par(t_worker *worker, t_philo *philo)
 
 static void fork_set(t_worker *worker, t_philo *philo)
 {
+    if (philo->num_of_philos == 1)
+    {
+
+        worker->right_fork = &philo->mutex_arr[0];
+        worker->left_fork = NULL;  
+        return;
+    }
+
     if(worker->id % 2 == 0)
     {
         fork_set_par(worker,philo);
@@ -62,55 +70,84 @@ t_worker *worker_init(t_philo *philo)
         worker[i].id = i + 1;
         worker[i].n_meals = 0;
         worker[i].philo = philo;
-        worker[i].is_full = 0;
-        printf("%i\n", worker[i].is_full);
+        worker[i].is_full = false;
+        worker[i].last_meal_time = get_time();
+        worker[i].is_dead = false;
+
         fork_set(&worker[i], philo);
         i++;
     }
 
     return worker;
 }
-static int create_monitor(t_philo *philo)
-{
 
-    pthread_create(&philo->monitor,NULL,monitor_thread,philo);
-   // printf("criado\n");
 
-    pthread_join(philo->monitor,NULL);
-    return 0;
-}
-
-int inicialize_program(int argc,char *argv[],t_philo *philo)
+int inicialize_program(int argc, char *argv[], t_philo *philo)
 {
     if(argc < 5 || argc >= 7)
     {
         printf("Error: Wrong number of arguments\n");
         return -1;
     }
-    memset(philo,0,sizeof(t_philo));
+    memset(philo, 0, sizeof(t_philo));
     if(do_parsing(argv) == -1)
     {
         return -1;
     }
-    if(give_values(philo,argv,argc) == -1)
+    if(give_values(philo, argv, argc) == -1)
     {
         printf("Error: Value Invalid\n");
         return -1;
     }
+    if (philo->num_of_philos == 1)
+    {
+        printf("Only one philosopher. He will die after %d ms.\n", philo->time_to_die);
+    }
+    philo->is_simulation_running = true;
     philo->mutex_arr = create_mutex(philo->num_of_philos);
+    if (!philo->mutex_arr)
+    {
+        printf("Error creating mutexes\n");
+        return -1;
+    }
 
     philo->philo_storage = malloc(sizeof(pthread_t) * philo->num_of_philos);
     if(!philo->philo_storage)
     {
         printf("Error allocating memory for array");
+        cleanup_mutex(philo->mutex_arr, philo->num_of_philos);
         return -1;
     }
 
     philo->workers = worker_init(philo);
-    storing_philos(philo);
-    create_monitor(philo);    
+    if (!philo->workers)
+    {
+        printf("Error initializing workers\n");
+        cleanup_mutex(philo->mutex_arr, philo->num_of_philos);
+        free(philo->philo_storage);
+        return -1;
+    }
+    
 
+    if (storing_philos(philo) == -1)
+    {
+        printf("Error creating philosopher threads\n");
+        cleanup_mutex(philo->mutex_arr, philo->num_of_philos);
+        free(philo->philo_storage);
+        free(philo->workers);
+        return -1;
+    }
+    
 
+    if (pthread_create(&philo->monitor, NULL, monitor_thread, philo) != 0)
+    {
+        printf("Error creating monitor thread\n");
+
+        cleanup_mutex(philo->mutex_arr, philo->num_of_philos);
+        free(philo->philo_storage);
+        free(philo->workers);
+        return -1;
+    }
 
     return 0;
 }

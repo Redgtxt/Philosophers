@@ -39,6 +39,7 @@ typedef struct s_philo
 	int time_to_sleep;
 	int num_of_times_each_philo_eat;//opcional
 	pthread_t monitor;
+	bool is_simulation_running;
 	pthread_t *philo_storage;//array que contem as threads
 	pthread_mutex_t *mutex_arr;//array de mutexs
 	struct s_worker *workers;//array que contem a estrutura das threads criada
@@ -48,9 +49,11 @@ typedef struct s_worker
 {
 	int num_of_philos;
 	long int time_to_die;
-	int is_full;
+	bool is_full;
 	long int time_to_eat;
 	long int time_to_sleep;
+	long int last_meal_time;
+	bool is_dead;
 	int 		n_meals;//opcional
 	pthread_mutex_t *left_fork; 
 	pthread_mutex_t *right_fork; 
@@ -72,11 +75,12 @@ int inicialize_program(int argc,char *argv[],t_philo *philo);
 
 /*	ROUTINE	*/
 void* routine(void *rec);
-
+int print_philo(t_worker *worker,char *msg);
 void* monitor_thread(void *rec);
 
 pthread_mutex_t *create_mutex(int num);
 void cleanup_mutex(pthread_mutex_t *arr,int size);
 
 void debug_values_philo(	t_philo philo);
+
 #endif
