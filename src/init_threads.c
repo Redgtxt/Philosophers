@@ -20,7 +20,7 @@ int storing_philos(t_philo *philo)
 }
 
 static void fork_set_impar(t_worker *worker, t_philo *philo)
-{ 
+{
     worker->left_fork = &philo->mutex_arr[worker->id - 1];
     if(worker->id == philo->num_of_philos)
         worker->right_fork = &philo->mutex_arr[0];
@@ -43,7 +43,7 @@ static void fork_set(t_worker *worker, t_philo *philo)
     {
 
         worker->right_fork = &philo->mutex_arr[0];
-        worker->left_fork = NULL;  
+        worker->left_fork = NULL;
         return;
     }
 
@@ -72,8 +72,7 @@ t_worker *worker_init(t_philo *philo)
         worker[i].philo = philo;
         worker[i].is_full = false;
         worker[i].last_meal_time = get_time();
-        worker[i].is_dead = false;
-
+        pthread_mutex_init(&worker[i].protect_time,NULL);
         fork_set(&worker[i], philo);
         i++;
     }
@@ -110,6 +109,11 @@ int inicialize_program(int argc, char *argv[], t_philo *philo)
         printf("Error creating mutexes\n");
         return -1;
     }
+    if (pthread_mutex_init(&philo->protect_print, NULL))
+    {
+        printf("Error creating mutex\n");
+        return -1;
+    }
 
     philo->philo_storage = malloc(sizeof(pthread_t) * philo->num_of_philos);
     if(!philo->philo_storage)
@@ -127,7 +131,7 @@ int inicialize_program(int argc, char *argv[], t_philo *philo)
         free(philo->philo_storage);
         return -1;
     }
-    
+
 
     if (storing_philos(philo) == -1)
     {
@@ -137,7 +141,7 @@ int inicialize_program(int argc, char *argv[], t_philo *philo)
         free(philo->workers);
         return -1;
     }
-    
+
 
     if (pthread_create(&philo->monitor, NULL, monitor_thread, philo) != 0)
     {

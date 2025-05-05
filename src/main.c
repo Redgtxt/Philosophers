@@ -55,6 +55,14 @@ int main(int  argc,char *argv[])
 		i++;
 	}
 	cleanup_mutex(philo.mutex_arr,philo.num_of_philos);
+	i = 0;
+	while (philo.num_of_philos > i)
+	{
+		pthread_mutex_destroy(&philo.workers[i].protect_time);
+		i++;
+	}
+
+	pthread_mutex_destroy(&philo.protect_print);
 	free(philo.philo_storage);
 	free(philo.workers);
 	return 0;

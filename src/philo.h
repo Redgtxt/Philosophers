@@ -6,7 +6,7 @@
 /*   By: hguerrei < hguerrei@student.42lisboa.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 14:49:29 by hguerrei          #+#    #+#             */
-/*   Updated: 2025/04/08 19:50:25 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/05/05 16:32:50 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_philo
 	pthread_t *philo_storage;//array que contem as threads
 	pthread_mutex_t *mutex_arr;//array de mutexs
 	struct s_worker *workers;//array que contem a estrutura das threads criada
+	pthread_mutex_t	protect_print;
 } t_philo;
 
 typedef struct s_worker
@@ -53,10 +54,10 @@ typedef struct s_worker
 	long int time_to_eat;
 	long int time_to_sleep;
 	long int last_meal_time;
-	bool is_dead;
+	pthread_mutex_t protect_time;
 	int 		n_meals;//opcional
-	pthread_mutex_t *left_fork; 
-	pthread_mutex_t *right_fork; 
+	pthread_mutex_t *left_fork;
+	pthread_mutex_t *right_fork;
 	t_philo *philo;
 	int id;
 } t_worker;
@@ -82,5 +83,7 @@ pthread_mutex_t *create_mutex(int num);
 void cleanup_mutex(pthread_mutex_t *arr,int size);
 
 void debug_values_philo(	t_philo philo);
+bool	is_running(t_worker *worker);
+bool    is_running_philo(t_philo *philo);
 
 #endif
