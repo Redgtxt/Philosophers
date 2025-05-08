@@ -24,7 +24,6 @@ static void ft_usleep(unsigned long int time)
 	{
 		usleep(10);
 	}
-
 	//usleep(time * 1000);
 }
 
@@ -47,6 +46,8 @@ static int eat(t_worker *worker)
 
 	if (!is_running(worker))
 		return 0;
+
+	
 	//Pega o garfo
 	pthread_mutex_lock(worker->right_fork);
 	print_philo(worker,FORK_MSG);
@@ -65,9 +66,10 @@ static int eat(t_worker *worker)
 	if(worker->philo->num_of_times_each_philo_eat > 0  && worker->n_meals == worker->philo->num_of_times_each_philo_eat)
 	{
 		worker->is_full = true;
+		//printf("%i:i am FULL\n", worker->id);
 	}
-	pthread_mutex_unlock(worker->right_fork);
 	pthread_mutex_unlock(worker->left_fork);
+	pthread_mutex_unlock(worker->right_fork);
 	return 0;
 }
 
@@ -83,6 +85,14 @@ static int think(t_worker* worker)
 {
 	if(is_running(worker))
 		print_philo(worker,THINK_MSG);
+	if(worker->num_of_philos % 2 > 0)
+	{
+		if((worker->time_to_eat * 2) - worker->time_to_sleep > 0)
+			ft_usleep((worker->time_to_eat * 2) - worker->time_to_sleep);
+	}
+	else if(worker->time_to_eat - worker->time_to_sleep > 0)
+		ft_usleep(worker->time_to_eat - worker->time_to_sleep);
+
 	return 0;
 }
 
@@ -95,6 +105,21 @@ bool	is_running(t_worker *worker)
 	return(aux);
 }
 
+void select_wait(t_worker *worker)
+{
+	if (worker->num_of_philos % 2 > 0)
+	{
+		if (worker->id == worker->num_of_philos)
+			ft_usleep((worker->time_to_eat * 2));
+		else if (worker->id % 2 > 0)
+			ft_usleep(worker->time_to_eat);
+
+	}
+	else if (worker->id % 2 > 0)
+			ft_usleep(worker->time_to_eat);
+}
+
+
 void* routine(void *rec)
 {
 	t_worker *worker;
@@ -105,20 +130,20 @@ void* routine(void *rec)
         eat(worker);
         return NULL;
     }
-
+	select_wait(worker);
 	while (is_running(worker))
 	{
-		if (worker->is_full || !is_running(worker))
+		if (!is_running(worker))
 			break;
 
 		eat(worker);
 
-		if (worker->is_full || !is_running(worker))
+		if (!is_running(worker))
 			break;
 
 		my_sleep(worker);
 
-		if (!is_running(worker) || !is_running(worker))
+		if (!is_running(worker))
 			break;
 		think(worker);
 	}
