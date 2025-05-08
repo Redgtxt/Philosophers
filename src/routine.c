@@ -15,9 +15,17 @@ int print_philo(t_worker *worker,char *msg)
 	return 0;
 }
 
-static void ft_usleep(long int time)
+static void ft_usleep(unsigned long int time)
 {
-	usleep(time * 1000);
+	unsigned long int start_time;
+
+	start_time = get_time();
+	while (get_time() - start_time < time)
+	{
+		usleep(10);
+	}
+
+	//usleep(time * 1000);
 }
 
 static int eat(t_worker *worker)
