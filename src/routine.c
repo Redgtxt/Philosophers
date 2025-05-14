@@ -61,12 +61,16 @@ static int eat(t_worker *worker)
 
 	print_philo(worker,EAT_MSG);
 	ft_usleep(worker->time_to_eat);
+	
+	pthread_mutex_lock(&worker->protect_time);
 	worker->n_meals++;
-
+	pthread_mutex_unlock(&worker->protect_time);
 	if(worker->philo->num_of_times_each_philo_eat > 0  && worker->n_meals == worker->philo->num_of_times_each_philo_eat)
 	{
+		pthread_mutex_lock(&worker->protect_time);
 		worker->is_full = true;
-		//printf("%i:i am FULL\n", worker->id);
+		pthread_mutex_unlock(&worker->protect_time);
+
 	}
 	pthread_mutex_unlock(worker->left_fork);
 	pthread_mutex_unlock(worker->right_fork);

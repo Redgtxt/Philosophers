@@ -77,10 +77,12 @@ void* monitor_thread(void *rec)
                 break;
             }
 
+            pthread_mutex_lock(&philo->workers[i].protect_time);
             if(philo->workers[i].is_full)
             {
                 nfull++;
             }
+            pthread_mutex_unlock(&philo->workers[i].protect_time);
             i++;
         }
 
@@ -92,8 +94,8 @@ void* monitor_thread(void *rec)
 
             if(nfull >= philo->num_of_philos)
             {
-                printf("All philosophers have eaten %d times. Stopping simulation.\n",
-                    philo->num_of_times_each_philo_eat);
+                //printf("All philosophers have eaten %d times. Stopping simulation.\n",
+                  //  philo->num_of_times_each_philo_eat);
                 kill_simulation(philo);
                 break;
 
