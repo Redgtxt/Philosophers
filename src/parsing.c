@@ -1,15 +1,6 @@
 
 #include "philo.h"
-void debug_values_philo(	t_philo philo)
-{
-    printf("DEBUG MODE\n");
-    printf("Number of Philos: %d\n",philo.num_of_philos);
-    printf("time_to_die: %d\n",philo.time_to_die);
-    printf("time_to_eat: %d\n",philo.time_to_eat);
-    printf("time_to_sleep: %d\n",philo.time_to_sleep);
-    if(philo.num_of_times_each_philo_eat != -1)
-        printf("num_of_times_each_philo_eat: %d\n",philo.num_of_times_each_philo_eat);
-}
+
 
 static int is_digit(char c)
 {
@@ -17,32 +8,38 @@ static int is_digit(char c)
         return (1);
     return (0);
 }
-
-static int	ft_atoi(const char *str)
+static int is_valid_num_char(char c, int position)
 {
-    int	i;
-    int	neg;
-    long	num;
+
+    if (position == 0)
+        return (is_digit(c) || c == '+');
+
+    return is_digit(c);
+}
+static int ft_atoi(const char *str)
+{
+    int i;
+    long num;
 
     i = 0;
-    neg = 1;
     num = 0;
+
     while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
         i++;
-    if (str[i] == '-' || str[i] == '+')
-    {
-        if (str[i] == '-')
-            neg = -1;
+    
+
+    if (str[i] == '+')
         i++;
-    }
+    else if (str[i] == '-')
+        return -1;
 
     while (str[i] >= '0' && str[i] <= '9')
     {
         num = (str[i] - '0') + (num * 10);
         i++;
     }
-    num = num * neg;
-    if (num > INT_MAX || num < INT_MIN)
+    
+    if (num > INT_MAX)
         return -1;
 
     return (int)num;
@@ -58,13 +55,19 @@ int do_parsing(char *argv[])
         j = 0;
         while(argv[i][j])
         {
-            if(!is_digit(argv[i][j]))
+            if(!is_valid_num_char(argv[i][j], j))
             {
-                printf("Error: Argument %d is not a number\n",i);
+                printf("Error: Argument %d contains invalid character '%c'\n", i, argv[i][j]);
                 return -1;
             }
             j++;
         }
+        
+        if (j == 1 && argv[i][0] == '+') {
+            printf("Error: Argument %d is just a '+' sign, not a number\n", i);
+            return -1;
+        }
+        
         i++;
     }
     return 0;

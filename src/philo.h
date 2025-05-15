@@ -62,17 +62,30 @@ typedef struct s_worker
 	int id;
 } t_worker;
 
+/*Parsing */
+int do_parsing(char *argv[]);
+int give_values(t_philo *philo, char *argv[], int argc);
+
+/*Philo Init*/
+void fork_set(t_worker *worker, t_philo *philo);
+int storing_philos(t_philo *philo);
+
+/*Worker Init*/
+int init_memory(t_philo *philo);
+
+/*Init threads*/
+int init_threads(t_philo *philo);
+int init_mutexes(t_philo *philo);
+
+/*Inicialize Program*/
+int inicialize_program(int argc, char *argv[], t_philo *philo);
+
 
 /*	TIME	*/
 long int my_gettimeofday(void);
 unsigned long int get_time(void);
 
-/*	INIT THREADS*/
-int do_parsing(char *argv[]);
-int give_values(t_philo *philo, char *argv[], int argc);
-t_worker *worker_init(t_philo *philo);
-int storing_philos(t_philo *philo);
-int inicialize_program(int argc,char *argv[],t_philo *philo);
+
 
 /*	ROUTINE	*/
 void* routine(void *rec);
@@ -82,7 +95,6 @@ void* monitor_thread(void *rec);
 pthread_mutex_t *create_mutex(int num);
 void cleanup_mutex(pthread_mutex_t *arr,int size);
 
-void debug_values_philo(	t_philo philo);
 bool	is_running(t_worker *worker);
 bool    is_running_philo(t_philo *philo);
 
