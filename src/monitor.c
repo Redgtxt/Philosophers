@@ -6,7 +6,7 @@
 /*   By: hguerrei <hguerrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 15:12:43 by hguerrei          #+#    #+#             */
-/*   Updated: 2025/05/16 15:12:45 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/05/16 18:13:58 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ static int	is_dead(t_worker *worker)
 	pthread_mutex_unlock(&worker->protect_time);
 	if (time_elapsed > worker->time_to_die)
 	{
-		print_philo(worker, DEAD_MSG);
+		kill_simulation(worker->philo);
+		printf("%lu Philosofer:%d is dead\n", get_time(), worker->id);
 		return (1);
 	}
 	return (0);
@@ -60,11 +61,12 @@ static int	have_we_all_eaten_enough(t_philo *philo, int nfull)
 
 static int	check_death(t_philo *philo, int i)
 {
-	if (is_dead(&philo->workers[i]))
+	is_dead(&philo->workers[i]);
+	/*if (is_dead(&philo->workers[i]))
 	{
 		kill_simulation(philo);
 		return (1);
-	}
+	}*/
 	return (0);
 }
 
