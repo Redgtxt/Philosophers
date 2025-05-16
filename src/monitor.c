@@ -1,108 +1,98 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   monitor.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hguerrei <hguerrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/16 15:12:43 by hguerrei          #+#    #+#             */
+/*   Updated: 2025/05/16 15:12:45 by hguerrei         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-
-static int is_dead(t_worker *worker)
+static int	is_dead(t_worker *worker)
 {
-    long int current_time;
-    long int time_elapsed;
+	long int	current_time;
+	long int	time_elapsed;
 
-    // Se o filósofo já foi marcado como morto, retorna isso
-    if (!is_running(worker))
-        return 1;
-
-    current_time = get_time();
-
+	if (!is_running(worker))
+		return (1);
+	current_time = get_time();
 	pthread_mutex_lock(&worker->protect_time);
-    time_elapsed = current_time - worker->last_meal_time;
+	time_elapsed = current_time - worker->last_meal_time;
 	pthread_mutex_unlock(&worker->protect_time);
-
-    // Se o tempo desde a última refeição exceder o tempo para morrer
-    if (time_elapsed > worker->time_to_die)
-    {
-        print_philo(worker, DEAD_MSG);
-        return 1;
-    }
-
-    return 0;
+	if (time_elapsed > worker->time_to_die)
+	{
+		print_philo(worker, DEAD_MSG);
+		return (1);
+	}
+	return (0);
 }
 
-void kill_simulation(t_philo *philo)
+static void	*monitor_one(t_philo *philo)
 {
-    pthread_mutex_lock(&philo->protect_print);
-    philo->is_simulation_running = false;
-    pthread_mutex_unlock(&philo->protect_print);
+	usleep(philo->time_to_die * 1000);
+	if (is_running_philo(philo))
+	{
+		print_philo(&philo->workers[0], DEAD_MSG);
+		kill_simulation(philo);
+	}
+	return (NULL);
 }
 
-bool    is_running_philo(t_philo *philo)
+static int	have_we_all_eaten_enough(t_philo *philo, int nfull)
 {
-    bool aux;
-	pthread_mutex_lock(&philo->protect_print);
-	aux = philo->is_simulation_running;
-	pthread_mutex_unlock(&philo->protect_print);
-	return(aux);
+	if (philo->num_of_times_each_philo_eat > 0)
+	{
+		if (nfull >= philo->num_of_philos)
+		{
+			pthread_mutex_lock(&philo->protect_print);
+			printf(EAT_ENOUGH);
+			pthread_mutex_unlock(&philo->protect_print);
+			kill_simulation(philo);
+			return (1);
+		}
+	}
+	return (0);
 }
 
-void* monitor_thread(void *rec)
+static int	check_death(t_philo *philo, int i)
 {
-    t_philo *philo;
-    philo = (t_philo *)rec;
+	if (is_dead(&philo->workers[i]))
+	{
+		kill_simulation(philo);
+		return (1);
+	}
+	return (0);
+}
 
-    int i;
-    int nfull;
+void	*monitor_thread(void *rec)
+{
+	t_philo	*philo;
+	int		i;
+	int		nfull;
 
-
-    if (philo->num_of_philos == 1)
-    {
-
-        usleep(philo->time_to_die * 1000);
-
-        if (is_running_philo(philo))
-        {
-            print_philo(&philo->workers[0], DEAD_MSG);
-            kill_simulation(philo);
-        }
-
-        return NULL;
-    }
-
-    while (is_running_philo(philo))
-    {
-        i = 0;
-        nfull = 0;
-        while (philo->num_of_philos > i)
-        {
-            if(is_dead(&philo->workers[i]))
-            {
-               kill_simulation(philo);
-                break;
-            }
-
-            pthread_mutex_lock(&philo->workers[i].protect_time);
-            if(philo->workers[i].is_full)
-            {
-                nfull++;
-            }
-            pthread_mutex_unlock(&philo->workers[i].protect_time);
-            i++;
-        }
-
-        // if(!is_running_philo(philo))
-        //     break;
-
-        if(philo->num_of_times_each_philo_eat > 0)
-        {
-
-            if(nfull >= philo->num_of_philos)
-            {
-                //printf("All philosophers have eaten %d times. Stopping simulation.\n",
-                  //  philo->num_of_times_each_philo_eat);
-                kill_simulation(philo);
-                break;
-
-            }
-        }
-
-      usleep(100);
-    }
-    return NULL;
+	philo = (t_philo *)rec;
+	if (philo->num_of_philos == 1)
+		return (monitor_one(philo));
+	while (is_running_philo(philo))
+	{
+		i = -1;
+		nfull = 0;
+		while (philo->num_of_philos > ++i)
+		{
+			if (check_death(philo, i))
+				break ;
+			pthread_mutex_lock(&philo->workers[i].protect_time);
+			if (philo->workers[i].is_full)
+				nfull++;
+			pthread_mutex_unlock(&philo->workers[i].protect_time);
+		}
+		if (have_we_all_eaten_enough(philo, nfull))
+			break ;
+		usleep(100);
+	}
+	return (NULL);
 }

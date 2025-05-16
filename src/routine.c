@@ -1,115 +1,40 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   routine.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hguerrei <hguerrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/16 15:13:04 by hguerrei          #+#    #+#             */
+/*   Updated: 2025/05/16 15:13:06 by hguerrei         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-int print_philo(t_worker *worker,char *msg)
+static int	my_sleep(t_worker *worker)
 {
-	pthread_mutex_lock(&worker->philo->protect_print);
-
-	if (!worker->philo->is_simulation_running && strcmp(msg, DEAD_MSG) != 0)
-	{
-		pthread_mutex_unlock(&worker->philo->protect_print);
-		return 0;
-	}
-	printf("%lu Philosofer:%d %s\n",get_time(), worker->id,msg);
-	pthread_mutex_unlock(&worker->philo->protect_print);
-
-	return 0;
-}
-
-static void ft_usleep(unsigned long int time)
-{
-	unsigned long int start_time;
-
-	start_time = get_time();
-	while (get_time() - start_time < time)
-	{
-		usleep(10);
-	}
-	//usleep(time * 1000);
-}
-
-static int eat(t_worker *worker)
-{
-
-	if(worker->num_of_philos == 1)
-	{
-			pthread_mutex_lock(worker->right_fork);
-			print_philo(worker, FORK_MSG);
-
-			while (is_running(worker))
-			{
-				usleep(100);
-			}
-
-			pthread_mutex_unlock(worker->right_fork);
-			return 0;
-	}
-
-	if (!is_running(worker))
-		return 0;
-
-	
-	//Pega o garfo
-	pthread_mutex_lock(worker->right_fork);
-	print_philo(worker,FORK_MSG);
-
-	pthread_mutex_lock(worker->left_fork);
-	print_philo(worker,FORK_MSG);
-
-	pthread_mutex_lock(&worker->protect_time);
-	worker->last_meal_time = get_time();
-	pthread_mutex_unlock(&worker->protect_time);
-
-	print_philo(worker,EAT_MSG);
-	ft_usleep(worker->time_to_eat);
-	
-	pthread_mutex_lock(&worker->protect_time);
-	worker->n_meals++;
-	pthread_mutex_unlock(&worker->protect_time);
-	if(worker->philo->num_of_times_each_philo_eat > 0  && worker->n_meals == worker->philo->num_of_times_each_philo_eat)
-	{
-		pthread_mutex_lock(&worker->protect_time);
-		worker->is_full = true;
-		pthread_mutex_unlock(&worker->protect_time);
-
-	}
-	pthread_mutex_unlock(worker->left_fork);
-	pthread_mutex_unlock(worker->right_fork);
-	return 0;
-}
-
-static int my_sleep(t_worker *worker)
-{
-	if(is_running(worker))
-		print_philo(worker,SLEEP_MSG);
+	if (is_running(worker))
+		print_philo(worker, SLEEP_MSG);
 	ft_usleep(worker->time_to_sleep);
-	return 0;
+	return (0);
 }
 
-static int think(t_worker* worker)
+static int	think(t_worker *worker)
 {
-	if(is_running(worker))
-		print_philo(worker,THINK_MSG);
-	if(worker->num_of_philos % 2 > 0)
+	if (is_running(worker))
+		print_philo(worker, THINK_MSG);
+	if (worker->num_of_philos % 2 > 0)
 	{
-		if((worker->time_to_eat * 2) - worker->time_to_sleep > 0)
+		if ((worker->time_to_eat * 2) - worker->time_to_sleep > 0)
 			ft_usleep((worker->time_to_eat * 2) - worker->time_to_sleep);
 	}
-	else if(worker->time_to_eat - worker->time_to_sleep > 0)
+	else if (worker->time_to_eat - worker->time_to_sleep > 0)
 		ft_usleep(worker->time_to_eat - worker->time_to_sleep);
-
-	return 0;
+	return (0);
 }
 
-bool	is_running(t_worker *worker)
-{
-	bool aux;
-	pthread_mutex_lock(&worker->philo->protect_print);
-	aux = worker->philo->is_simulation_running;
-	pthread_mutex_unlock(&worker->philo->protect_print);
-	return(aux);
-}
-
-void select_wait(t_worker *worker)
+static void	select_wait(t_worker *worker)
 {
 	if (worker->num_of_philos % 2 > 0)
 	{
@@ -117,40 +42,30 @@ void select_wait(t_worker *worker)
 			ft_usleep((worker->time_to_eat * 2));
 		else if (worker->id % 2 > 0)
 			ft_usleep(worker->time_to_eat);
-
 	}
 	else if (worker->id % 2 > 0)
-			ft_usleep(worker->time_to_eat);
+		ft_usleep(worker->time_to_eat);
 }
 
-
-void* routine(void *rec)
+void	*routine(void *rec)
 {
-	t_worker *worker;
-	worker = (t_worker *)rec;
+	t_worker	*worker;
 
+	worker = (t_worker *)rec;
 	if (worker->num_of_philos == 1)
-    {
-        eat(worker);
-        return NULL;
-    }
+		return (eat(worker), NULL);
 	select_wait(worker);
 	while (is_running(worker))
 	{
 		if (!is_running(worker))
-			break;
-
+			break ;
 		eat(worker);
-
 		if (!is_running(worker))
-			break;
-
+			break ;
 		my_sleep(worker);
-
 		if (!is_running(worker))
-			break;
+			break ;
 		think(worker);
 	}
-
-	return NULL;
+	return (NULL);
 }

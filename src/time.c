@@ -1,24 +1,47 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   time.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hguerrei <hguerrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/16 15:13:10 by hguerrei          #+#    #+#             */
+/*   Updated: 2025/05/16 15:13:12 by hguerrei         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-long int my_gettimeofday(void)
+long int	my_gettimeofday(void)
 {
-	struct timeval tv;
+	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
-	return(tv.tv_sec * MILISECONDS + tv.tv_usec / MILISECONDS);
+	return (tv.tv_sec * MILISECONDS + tv.tv_usec / MILISECONDS);
 }
 
-unsigned long int get_time(void)
+unsigned long int	get_time(void)
 {
-	static unsigned long int start_time;
+	static unsigned long int	start_time;
 
-	if(!start_time)
+	if (!start_time)
 	{
 		start_time = my_gettimeofday();
-		return(0);
+		return (0);
 	}
 	else
 	{
-		return(my_gettimeofday() - start_time );
+		return (my_gettimeofday() - start_time);
+	}
+}
+
+void	ft_usleep(unsigned long int time)
+{
+	unsigned long int	start_time;
+
+	start_time = get_time();
+	while (get_time() - start_time < time)
+	{
+		usleep(10);
 	}
 }

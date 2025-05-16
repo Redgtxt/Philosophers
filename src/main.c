@@ -1,70 +1,40 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hguerrei <hguerrei@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/16 15:12:37 by hguerrei          #+#    #+#             */
+/*   Updated: 2025/05/16 15:12:39 by hguerrei         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-
-pthread_mutex_t *create_mutex(int num)
+int	main(int argc, char *argv[])
 {
-	int i;
-	pthread_mutex_t *mutex_arr;
+	t_philo	philo;
+	int		i;
 
-	mutex_arr = malloc(sizeof(pthread_mutex_t) * num);
-	if(!mutex_arr)
-		return NULL;
+	if (inicialize_program(argc, argv, &philo) == -1)
+		return (-1);
 	i = 0;
-	while(num > i)
-	{
-		pthread_mutex_init(&mutex_arr[i],NULL);
-		i++;
-	}
-
-	return mutex_arr;
-}
-
-
-void cleanup_mutex(pthread_mutex_t *arr,int size)
-{
-	if(!arr)
-		return;
-
-	int i;
-
-	i = 0;
-	while (size > i)
-	{
-		pthread_mutex_destroy(&arr[i]);
-		i++;
-	}
-	free(arr);
-}
-
-
-
-int main(int  argc,char *argv[])
-{
-	t_philo philo;
-
-	if(inicialize_program(argc,argv,&philo) == -1)
-		return -1;
-
-	int i;
-
-	i = 0;
-	pthread_join(philo.monitor,NULL);
+	pthread_join(philo.monitor, NULL);
 	while (philo.num_of_philos > i)
 	{
-		pthread_join(philo.philo_storage[i],NULL);
+		pthread_join(philo.philo_storage[i], NULL);
 		i++;
 	}
-	cleanup_mutex(philo.mutex_arr,philo.num_of_philos);
+	cleanup_mutex_arr(philo.mutex_arr, philo.num_of_philos);
 	i = 0;
 	while (philo.num_of_philos > i)
 	{
 		pthread_mutex_destroy(&philo.workers[i].protect_time);
 		i++;
 	}
-
 	pthread_mutex_destroy(&philo.protect_print);
 	free(philo.philo_storage);
 	free(philo.workers);
-	return 0;
+	return (0);
 }
-

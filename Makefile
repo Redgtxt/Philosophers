@@ -7,11 +7,13 @@ SRC = $(SRC_DIR)/parsing.c \
 	$(SRC_DIR)/philo_init.c \
 	$(SRC_DIR)/worker_init.c \
 	$(SRC_DIR)/inicialize_program.c \
-	$(SRC_DIR)/init_threads.c \
+	$(SRC_DIR)/init_mutexs.c\
 	$(SRC_DIR)/main.c \
 	$(SRC_DIR)/routine.c \
 	$(SRC_DIR)/time.c \
-	$(SRC_DIR)/monitor.c
+	$(SRC_DIR)/monitor.c\
+	$(SRC_DIR)/admin_permissions.c\
+	$(SRC_DIR)/eat.c\
 
 OBJS = $(SRC:$(SRC_DIR)/%.c=$(OBJDIR)/%.o)
 
