@@ -33,12 +33,12 @@ static int	think(t_worker *worker)
 		ft_usleep(worker->time_to_eat - worker->time_to_sleep);
 	return (0);
 }
-
-static void	select_wait(t_worker *worker)
+//
+static void	determine_wait_time(t_worker *worker)
 {
 	if (worker->num_of_philos % 2 > 0)
 	{
-		if (worker->id == worker->num_of_philos)
+		if (worker->id == worker->num_of_philos)// I'm the last philo
 			ft_usleep((worker->time_to_eat * 2));
 		else if (worker->id % 2 > 0)
 			ft_usleep(worker->time_to_eat);
@@ -54,7 +54,7 @@ void	*routine(void *rec)
 	worker = (t_worker *)rec;
 	if (worker->num_of_philos == 1)
 		return (eat(worker), NULL);
-	select_wait(worker);
+	determine_wait_time(worker);
 	while (is_running(worker))
 	{
 		if (!is_running(worker))
