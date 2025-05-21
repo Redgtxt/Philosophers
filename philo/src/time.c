@@ -6,7 +6,7 @@
 /*   By: hguerrei <hguerrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 15:13:10 by hguerrei          #+#    #+#             */
-/*   Updated: 2025/05/16 15:13:12 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/05/21 16:22:49 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,14 @@ unsigned long int	get_time(void)
 	}
 }
 
-void	ft_usleep(unsigned long int time)
+void	ft_usleep(unsigned long int time,t_worker *worker)
 {
 	unsigned long int	start_time;
 
 	start_time = get_time();
-	while (get_time() - start_time < time)
+	while (get_time() - start_time < time && is_running(worker))
 	{
+		
 		usleep(10);
 	}
 }

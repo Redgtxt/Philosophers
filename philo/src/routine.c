@@ -6,7 +6,7 @@
 /*   By: hguerrei <hguerrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 15:13:04 by hguerrei          #+#    #+#             */
-/*   Updated: 2025/05/16 15:13:06 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/05/21 16:22:30 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int	my_sleep(t_worker *worker)
 {
 	if (is_running(worker))
 		print_philo(worker, SLEEP_MSG);
-	ft_usleep(worker->time_to_sleep);
+	ft_usleep(worker->time_to_sleep, worker);
 	return (0);
 }
 
@@ -27,24 +27,24 @@ static int	think(t_worker *worker)
 	if (worker->num_of_philos % 2 > 0)
 	{
 		if ((worker->time_to_eat * 2) - worker->time_to_sleep > 0)
-			ft_usleep((worker->time_to_eat * 2) - worker->time_to_sleep);
+			ft_usleep((worker->time_to_eat * 2) - worker->time_to_sleep, worker);
 	}
 	else if (worker->time_to_eat - worker->time_to_sleep > 0)
-		ft_usleep(worker->time_to_eat - worker->time_to_sleep);
+		ft_usleep(worker->time_to_eat - worker->time_to_sleep, worker);
 	return (0);
 }
-//
+
 static void	determine_wait_time(t_worker *worker)
 {
 	if (worker->num_of_philos % 2 > 0)
 	{
-		if (worker->id == worker->num_of_philos)// I'm the last philo
-			ft_usleep((worker->time_to_eat * 2));
+		if (worker->id == worker->num_of_philos)
+			ft_usleep((worker->time_to_eat * 2), worker);
 		else if (worker->id % 2 > 0)
-			ft_usleep(worker->time_to_eat);
+			ft_usleep(worker->time_to_eat, worker);
 	}
 	else if (worker->id % 2 > 0)
-		ft_usleep(worker->time_to_eat);
+		ft_usleep(worker->time_to_eat, worker);
 }
 
 void	*routine(void *rec)

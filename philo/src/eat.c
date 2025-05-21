@@ -6,7 +6,7 @@
 /*   By: hguerrei <hguerrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 15:12:22 by hguerrei          #+#    #+#             */
-/*   Updated: 2025/05/16 15:12:24 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/05/21 16:23:17 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	eat(t_worker *worker)
 	worker->last_meal_time = get_time();
 	pthread_mutex_unlock(&worker->protect_time);
 	print_philo(worker, EAT_MSG);
-	ft_usleep(worker->time_to_eat);
+	ft_usleep(worker->time_to_eat, worker);
 	pthread_mutex_lock(&worker->protect_time);
 	worker->n_meals++;
 	pthread_mutex_unlock(&worker->protect_time);

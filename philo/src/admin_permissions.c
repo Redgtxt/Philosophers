@@ -6,7 +6,7 @@
 /*   By: hguerrei <hguerrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 15:12:14 by hguerrei          #+#    #+#             */
-/*   Updated: 2025/05/16 18:09:07 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/05/21 16:14:00 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	print_philo(t_worker *worker, char *msg)
 		pthread_mutex_unlock(&worker->philo->protect_print);
 		return (0);
 	}
-	printf("%lu Philosofer:%d %s\n", get_time(), worker->id, msg);
+	printf("%lu %d %s\n", get_time(), worker->id, msg);
 	pthread_mutex_unlock(&worker->philo->protect_print);
 	return (0);
 }

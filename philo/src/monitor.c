@@ -6,7 +6,7 @@
 /*   By: hguerrei <hguerrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 15:12:43 by hguerrei          #+#    #+#             */
-/*   Updated: 2025/05/16 18:13:58 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/05/21 16:21:36 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	is_dead(t_worker *worker)
 	if (time_elapsed > worker->time_to_die)
 	{
 		kill_simulation(worker->philo);
-		printf("%lu Philosofer:%d is dead\n", get_time(), worker->id);
+		printf("%lu %d is dead\n", get_time(), worker->id);
 		return (1);
 	}
 	return (0);
@@ -59,17 +59,6 @@ static int	have_we_all_eaten_enough(t_philo *philo, int nfull)
 	return (0);
 }
 
-static int	check_death(t_philo *philo, int i)
-{
-	is_dead(&philo->workers[i]);
-	/*if (is_dead(&philo->workers[i]))
-	{
-		kill_simulation(philo);
-		return (1);
-	}*/
-	return (0);
-}
-
 void	*monitor_thread(void *rec)
 {
 	t_philo	*philo;
@@ -85,7 +74,7 @@ void	*monitor_thread(void *rec)
 		nfull = 0;
 		while (philo->num_of_philos > ++i)
 		{
-			if (check_death(philo, i))
+			if (is_dead(&philo->workers[i]))
 				break ;
 			pthread_mutex_lock(&philo->workers[i].protect_time);
 			if (philo->workers[i].is_full)

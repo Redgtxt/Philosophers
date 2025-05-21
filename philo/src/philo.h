@@ -6,7 +6,7 @@
 /*   By: hguerrei <hguerrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 15:12:03 by hguerrei          #+#    #+#             */
-/*   Updated: 2025/05/16 16:00:40 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/05/21 16:21:57 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int					print_philo(t_worker *worker, char *msg);
 /*	TIME	*/
 long int			my_gettimeofday(void);
 unsigned long int	get_time(void);
-void				ft_usleep(unsigned long int time);
+void				ft_usleep(unsigned long int time,t_worker *worker);
 
 /*Eat*/
 int					eat(t_worker *worker);

@@ -6,7 +6,7 @@
 /*   By: hguerrei <hguerrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 15:12:55 by hguerrei          #+#    #+#             */
-/*   Updated: 2025/05/16 15:12:57 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/05/21 16:53:23 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,12 @@ int	storing_philos(t_philo *philo)
 		if (pthread_create(&philo->philo_storage[p_num], NULL, &routine,
 				&(philo->workers[p_num])) != 0)
 		{
-			return (-1);
+			kill_simulation(philo);
+			while (p_num-- > 0)
+			{
+				pthread_join(philo->philo_storage[p_num],NULL);
+			}
+			return -1;
 		}
 		p_num++;
 	}
