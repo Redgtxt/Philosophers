@@ -25,9 +25,9 @@ int	storing_philos(t_philo *philo)
 			kill_simulation(philo);
 			while (p_num-- > 0)
 			{
-				pthread_join(philo->philo_storage[p_num],NULL);
+				pthread_join(philo->philo_storage[p_num], NULL);
 			}
-			return -1;
+			return (-1);
 		}
 		p_num++;
 	}

@@ -35,14 +35,13 @@ unsigned long int	get_time(void)
 	}
 }
 
-void	ft_usleep(unsigned long int time,t_worker *worker)
+void	ft_usleep(unsigned long int time, t_worker *worker)
 {
 	unsigned long int	start_time;
 
 	start_time = get_time();
 	while (get_time() - start_time < time && is_running(worker))
 	{
-		
 		usleep(10);
 	}
 }

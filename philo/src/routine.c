@@ -6,7 +6,7 @@
 /*   By: hguerrei <hguerrei@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 15:13:04 by hguerrei          #+#    #+#             */
-/*   Updated: 2025/05/21 16:22:30 by hguerrei         ###   ########.fr       */
+/*   Updated: 2025/05/22 14:52:06 by hguerrei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,10 @@ static int	think(t_worker *worker)
 	if (worker->num_of_philos % 2 > 0)
 	{
 		if ((worker->time_to_eat * 2) - worker->time_to_sleep > 0)
-			ft_usleep((worker->time_to_eat * 2) - worker->time_to_sleep, worker);
+		{
+			ft_usleep((worker->time_to_eat * 2) - worker->time_to_sleep,
+				worker);
+		}
 	}
 	else if (worker->time_to_eat - worker->time_to_sleep > 0)
 		ft_usleep(worker->time_to_eat - worker->time_to_sleep, worker);
